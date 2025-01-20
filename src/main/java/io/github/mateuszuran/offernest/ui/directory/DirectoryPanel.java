@@ -1,14 +1,13 @@
 package main.java.io.github.mateuszuran.offernest.ui.directory;
 
+import main.java.io.github.mateuszuran.offernest.ui.configmanager.ConfigManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Properties;
 
-public class DirectoryPanel extends JFrame {
+public class DirectoryPanel {
     private final JButton searchButton;
     private final JTextField directory;
     private final JButton dirBtn;
@@ -19,63 +18,49 @@ public class DirectoryPanel extends JFrame {
         this.dirBtn = dirBtn;
 
         directory.setForeground(Color.gray);
-        searchBtnAction();
-        readPropertiesFile();
-        openBtnAction();
+
+        initializeActions();
+        loadInitialDirectory();
     }
 
-    private void searchBtnAction() {
+    private void initializeActions() {
+        searchButton.addActionListener(e -> openDirectoryChooser());
+        dirBtn.addActionListener(e -> openDirectory());
+    }
+
+    private void loadInitialDirectory() {
+        String dir = ConfigManager.readDirectory();
+        if (dir != null && !dir.isEmpty()) {
+            directory.setText(dir);
+            dirBtn.setEnabled(true);
+        } else dirBtn.setEnabled(false);
+    }
+
+    private void openDirectoryChooser() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-        this.searchButton.addActionListener(e -> {
-            int result = fileChooser.showOpenDialog(fileChooser);
+        int result = fileChooser.showOpenDialog(fileChooser);
 
-            if (result == JFileChooser.APPROVE_OPTION) {
-                File selectedFolder = fileChooser.getSelectedFile();
-                saveToProperties(selectedFolder.getAbsolutePath());
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFolder = fileChooser.getSelectedFile();
+            String path = selectedFolder.getAbsolutePath();
+            ConfigManager.saveDirectory(path);
+            directory.setText(path);
+            dirBtn.setEnabled(true);
 
-            } else {
-                System.out.println("No folder selected.");
-            }
-        });
-    }
-
-    // TODO: disable button before action
-    private void openBtnAction() {
-        this.dirBtn.addActionListener(e -> {
-            File dir = new File(directory.getText());
-            if (dir.exists() && dir.isDirectory()) {
-                try {
-                    Desktop desktop = Desktop.getDesktop();
-                    desktop.open(dir);
-                } catch (IOException i) {
-                    i.printStackTrace();
-                }
-            } else this.dirBtn.setEnabled(false);
-        });
-    }
-
-    private void saveToProperties(String directory) {
-        Properties props = new Properties();
-        props.setProperty("dirUri", directory);
-
-        try (FileOutputStream output = new FileOutputStream("config.properties")) {
-            props.store(output, "Application config");
-            this.directory.setText(directory);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            System.out.println("No folder selected.");
         }
     }
 
-    private void readPropertiesFile() {
-        Properties props = new Properties();
-
-        try (FileInputStream input = new FileInputStream("config.properties")) {
-            props.load(input);
-            this.directory.setText(props.getProperty("dirUri"));
-        } catch (IOException e) {
-            e.printStackTrace();
+    private void openDirectory() {
+        File dir = new File(directory.getText());
+        try {
+            Desktop desktop = Desktop.getDesktop();
+            desktop.open(dir);
+        } catch (IOException i) {
+            i.printStackTrace();
         }
     }
 }
