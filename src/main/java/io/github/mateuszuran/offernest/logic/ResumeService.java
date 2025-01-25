@@ -10,34 +10,57 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 public class ResumeService {
-    private static final String DEFAULT_DIRECTORY = "default_resume";
 
     public static void addResume(String note, String filePath) {
+        File subdirectory = createSubdirectory(note);
+
+        if (subdirectory == null) {
+            return;
+        }
+
+        File sourceFile = new File(filePath);
+        if (!validateSourceFile(sourceFile)) {
+            return;
+        }
+
+        copyFileToDirectory(sourceFile, subdirectory);
+    }
+
+    private static File createSubdirectory(String note) {
         String targetDirectoryPath = ConfigManager.readDirectory()
                 + File.separator
-                + (note.isEmpty() ? DEFAULT_DIRECTORY : removeWhiteSpaces(note));
+                + (note.isEmpty() ? "default_resume" : note.replaceAll(" ", "_"));
 
         File subdirectory = new File(targetDirectoryPath);
 
         if (!subdirectory.exists()) {
             if (!subdirectory.mkdir()) {
-                return;
+                return null;
             }
         } else {
             // TODO: window popup for user
             System.out.println("Katalog już istnieje: " + targetDirectoryPath);
         }
 
-        File sourceFile = new File(filePath);
-        if (!sourceFile.exists() || !sourceFile.isFile()) {
-            // TODO: handle error
-            System.err.println("Plik źródłowy nie istnieje lub nie jest plikiem: " + filePath);
-            return;
-        }
+        return subdirectory;
+    }
 
+    private static boolean validateSourceFile(File sourceFile) {
+        if (!sourceFile.exists()) {
+            System.err.println("Plik źródłowy nie istnieje: " + sourceFile.getAbsolutePath());
+            return false;
+        }
+        if (!sourceFile.isFile()) {
+            System.err.println("Podana ścieżka nie jest plikiem: " + sourceFile.getAbsolutePath());
+            return false;
+        }
+        return true;
+    }
+
+    private static void copyFileToDirectory(File sourceFile, File targetDirectory) {
         String fileName = sourceFile.getName();
         Path sourcePath = sourceFile.toPath();
-        Path destinationPath = Paths.get(subdirectory.getAbsolutePath(), fileName);
+        Path destinationPath = Paths.get(targetDirectory.getAbsolutePath(), fileName);
 
         try {
             Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
@@ -46,9 +69,5 @@ public class ResumeService {
             System.err.println("Błąd podczas kopiowania pliku: " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    private static String removeWhiteSpaces(String note) {
-        return note.replaceAll(" ", "_");
     }
 }
