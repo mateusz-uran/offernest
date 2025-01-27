@@ -1,8 +1,8 @@
 package main.java.io.github.mateuszuran.offernest.ui.resumes;
 
-import main.java.io.github.mateuszuran.offernest.logic.ResumeEntity;
 import main.java.io.github.mateuszuran.offernest.logic.ResumeService;
 import main.java.io.github.mateuszuran.offernest.ui.GlobalFileChooser;
+import main.java.io.github.mateuszuran.offernest.ui.offer.OfferPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,10 +20,10 @@ public class ResumeDialog {
         initializeActions(dialog);
 
         dialog.add(createNotePanel(), BorderLayout.NORTH);
-        dialog.add(createFilePanel(), BorderLayout.CENTER);
-        dialog.add(submitButton, BorderLayout.SOUTH);
+        dialog.add(new OfferPanel(), BorderLayout.CENTER);
+        dialog.add(createBottomPanel(), BorderLayout.SOUTH);
 
-        dialog.setSize(400, 250);
+        dialog.setSize(400, 350);
         dialog.setLocationRelativeTo(frame);
         dialog.setVisible(true);
     }
@@ -41,24 +41,30 @@ public class ResumeDialog {
     }
 
     private void saveResume(JDialog dialog) {
-        ResumeEntity resume = new ResumeEntity(noteText.getText(), fileLabel.getText());
-        // TODO: replace with actual logic later
         ResumeService.addResume(noteText.getText(), fileLabel.getText());
-
         dialog.dispose();
     }
 
     private JPanel createNotePanel() {
-        JPanel notePanel = new JPanel(new BorderLayout());
-        notePanel.add(new JLabel("Notes"), BorderLayout.NORTH);
-        notePanel.add(noteText, BorderLayout.SOUTH);
+        JPanel notePanel = new JPanel();
+        notePanel.setLayout(new BoxLayout(notePanel, BoxLayout.Y_AXIS));
+
+        JLabel noteLabel = new JLabel("Notes");
+        noteLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        noteLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+
+        noteText.setAlignmentX(Component.CENTER_ALIGNMENT);
+        noteText.setMaximumSize(new Dimension(250, 25));
+
+        notePanel.add(noteLabel);
+        notePanel.add(noteText);
         return notePanel;
     }
 
     private JPanel createFilePanel() {
         JPanel filePanel = new JPanel(new BorderLayout());
-        filePanel.add(fileButton, BorderLayout.EAST);
-        filePanel.add(fileLabel, BorderLayout.WEST);
+        filePanel.add(fileButton, BorderLayout.NORTH);
+        filePanel.add(fileLabel, BorderLayout.SOUTH);
         return filePanel;
     }
 
@@ -67,5 +73,16 @@ public class ResumeDialog {
         if (path != null && !path.isEmpty()) {
             fileLabel.setText(path);
         }
+    }
+
+    private JPanel createBottomPanel() {
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
+
+        JPanel filePanel = createFilePanel();
+
+        bottomPanel.add(filePanel, BorderLayout.WEST);
+        bottomPanel.add(submitButton, BorderLayout.EAST);
+        return bottomPanel;
     }
 }

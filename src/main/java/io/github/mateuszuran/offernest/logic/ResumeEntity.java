@@ -1,24 +1,26 @@
 package main.java.io.github.mateuszuran.offernest.logic;
 
+import java.util.List;
+
 public class ResumeEntity {
+    private final String resumePath;
+    private final List<String> offers;
 
-    public ResumeEntity(String note, String pdfDirUri) {
-        this.note = note;
-        this.pdfDirUri = pdfDirUri;
+    public ResumeEntity(String resumePath, List<String> offers) {
+        this.resumePath = resumePath;
+        this.offers = offers;
     }
 
-    private final String note;
-    private final String pdfDirUri;
-
-    public String getNote() {
-        return note;
+    public String getResumePath() {
+        return resumePath;
     }
 
-    public String getPdfDirUri() {
-        return pdfDirUri;
+    public List<String> getOffers() {
+        return offers;
     }
 
-    public void showCreatedResume() {
-        System.out.println("Created resume: " + this.note + " with url: " + this.pdfDirUri);
+    @Override
+    public String toString() {
+        return "ResumeEntity{ ResumePath: " + getResumePath() + " for offers: " + offers + " }";
     }
 }

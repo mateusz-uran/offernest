@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 public class ResumeService {
 
@@ -65,6 +66,13 @@ public class ResumeService {
         try {
             Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
             System.out.println("Plik został skopiowany do: " + destinationPath);
+
+            PersistData.createJsonFile(
+                    new ResumeEntity(destinationPath.toString(),
+                            List.of("link1", "link2", "link3")
+                    )
+            );
+
         } catch (IOException e) {
             System.err.println("Błąd podczas kopiowania pliku: " + e.getMessage());
             e.printStackTrace();
