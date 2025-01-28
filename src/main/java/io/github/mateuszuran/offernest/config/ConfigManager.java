@@ -1,4 +1,4 @@
-package main.java.io.github.mateuszuran.offernest.config;
+package io.github.mateuszuran.offernest.config;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

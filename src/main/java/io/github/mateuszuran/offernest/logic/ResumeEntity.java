@@ -1,4 +1,7 @@
-package main.java.io.github.mateuszuran.offernest.logic;
+package io.github.mateuszuran.offernest.logic;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
@@ -6,7 +9,9 @@ public class ResumeEntity {
     private final String resumePath;
     private final List<String> offers;
 
-    public ResumeEntity(String resumePath, List<String> offers) {
+    @JsonCreator
+    public ResumeEntity(@JsonProperty("resumePath") String resumePath,
+                        @JsonProperty("offers") List<String> offers) {
         this.resumePath = resumePath;
         this.offers = offers;
     }

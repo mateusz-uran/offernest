@@ -1,6 +1,6 @@
-package main.java.io.github.mateuszuran.offernest.logic;
+package io.github.mateuszuran.offernest.logic;
 
-import main.java.io.github.mateuszuran.offernest.config.ConfigManager;
+import io.github.mateuszuran.offernest.config.ConfigManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,70 +12,41 @@ import java.util.List;
 
 public class ResumeService {
 
-    public static void addResume(String note, String filePath) {
-        File subdirectory = createSubdirectory(note);
+    public static void addResume(String note, String filePath, List<String> links) {
+        File subdirectory = createOrGetSubdirectory(note);
 
-        if (subdirectory == null) {
+        if (subdirectory == null || !validateSourceFile(filePath)) {
             return;
         }
 
-        File sourceFile = new File(filePath);
-        if (!validateSourceFile(sourceFile)) {
-            return;
-        }
-
-        copyFileToDirectory(sourceFile, subdirectory);
+        copyFileToDirectory(new File(filePath), subdirectory, links);
     }
 
-    private static File createSubdirectory(String note) {
-        String targetDirectoryPath = ConfigManager.readDirectory()
-                + File.separator
-                + (note.isEmpty() ? "default_resume" : note.replaceAll(" ", "_"));
+    private static File createOrGetSubdirectory(String note) {
+        String directoryName = note.isEmpty() ? "default_resume" : note.replaceAll(" ", "_");
+        String targetDirectoryPath = ConfigManager.readDirectory() + File.separator + directoryName;
 
         File subdirectory = new File(targetDirectoryPath);
-
-        if (!subdirectory.exists()) {
-            if (!subdirectory.mkdir()) {
-                return null;
-            }
-        } else {
-            // TODO: window popup for user
-            System.out.println("Katalog już istnieje: " + targetDirectoryPath);
+        if (!subdirectory.exists() && !subdirectory.mkdir()) {
+            return null;
         }
-
         return subdirectory;
     }
 
-    private static boolean validateSourceFile(File sourceFile) {
-        if (!sourceFile.exists()) {
-            System.err.println("Plik źródłowy nie istnieje: " + sourceFile.getAbsolutePath());
-            return false;
-        }
-        if (!sourceFile.isFile()) {
-            System.err.println("Podana ścieżka nie jest plikiem: " + sourceFile.getAbsolutePath());
-            return false;
-        }
-        return true;
+    private static boolean validateSourceFile(String filePath) {
+        File file = new File(filePath);
+        return file.exists() && file.isFile();
     }
 
-    private static void copyFileToDirectory(File sourceFile, File targetDirectory) {
-        String fileName = sourceFile.getName();
-        Path sourcePath = sourceFile.toPath();
-        Path destinationPath = Paths.get(targetDirectory.getAbsolutePath(), fileName);
+    private static void copyFileToDirectory(File sourceFile, File targetDirectory, List<String> links) {
+        Path destinationPath = Paths.get(targetDirectory.getAbsolutePath(), sourceFile.getName());
 
         try {
-            Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
-            System.out.println("Plik został skopiowany do: " + destinationPath);
-
-            PersistData.createJsonFile(
-                    new ResumeEntity(destinationPath.toString(),
-                            List.of("link1", "link2", "link3")
-                    )
-            );
-
+            Files.copy(sourceFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+            PersistData.createJsonFile(new ResumeEntity(destinationPath.toString(), links));
+            System.out.println("File copied to: " + destinationPath);
         } catch (IOException e) {
-            System.err.println("Błąd podczas kopiowania pliku: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("Error copying file: " + e.getMessage());
         }
     }
 }

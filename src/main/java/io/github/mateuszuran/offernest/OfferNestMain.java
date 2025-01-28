@@ -1,7 +1,6 @@
-package main.java.io.github.mateuszuran.offernest;
+package io.github.mateuszuran.offernest;
 
-import main.java.io.github.mateuszuran.offernest.ui.mainframe.MainFrame;
-
+import io.github.mateuszuran.offernest.ui.mainframe.MainFrame;
 import java.awt.*;
 
 public class OfferNestMain {

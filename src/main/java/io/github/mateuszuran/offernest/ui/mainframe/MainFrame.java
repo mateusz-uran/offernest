@@ -1,7 +1,9 @@
-package main.java.io.github.mateuszuran.offernest.ui.mainframe;
+package io.github.mateuszuran.offernest.ui.mainframe;
 
-import main.java.io.github.mateuszuran.offernest.ui.directory.DirectoryPanel;
-import main.java.io.github.mateuszuran.offernest.ui.resumes.ResumeDialog;
+import io.github.mateuszuran.offernest.logic.PersistData;
+import io.github.mateuszuran.offernest.logic.ResumeEntity;
+import io.github.mateuszuran.offernest.ui.directory.DirectoryPanel;
+import io.github.mateuszuran.offernest.ui.resumes.ResumeDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +13,16 @@ public class MainFrame extends JFrame {
     public MainFrame() {
         createWindow();
         createUpperPanel();
+
+        JButton testButton = new JButton("test");
+        testButton.addActionListener(e -> {
+            var res = PersistData.readJsonFile();
+            for (ResumeEntity o : res) {
+                System.out.println(o);
+            }
+        });
+
+        add(testButton);
     }
 
     private void createWindow() {

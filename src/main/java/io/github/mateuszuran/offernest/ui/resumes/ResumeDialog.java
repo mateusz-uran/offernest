@@ -1,8 +1,9 @@
-package main.java.io.github.mateuszuran.offernest.ui.resumes;
+package io.github.mateuszuran.offernest.ui.resumes;
 
-import main.java.io.github.mateuszuran.offernest.logic.ResumeService;
-import main.java.io.github.mateuszuran.offernest.ui.GlobalFileChooser;
-import main.java.io.github.mateuszuran.offernest.ui.offer.OfferPanel;
+import io.github.mateuszuran.offernest.logic.OffersService;
+import io.github.mateuszuran.offernest.logic.ResumeService;
+import io.github.mateuszuran.offernest.ui.GlobalFileChooser;
+import io.github.mateuszuran.offernest.ui.offer.OfferPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,10 +15,14 @@ public class ResumeDialog {
     private final JLabel fileLabel = new JLabel("No file selected");
 
     public ResumeDialog(JFrame frame) {
+        JDialog dialog = createDialogFrame(frame);
+        initializeActions(dialog);
+        dialog.setVisible(true);
+    }
+
+    private JDialog createDialogFrame(JFrame frame) {
         JDialog dialog = new JDialog(frame);
         dialog.setLayout(new BorderLayout());
-
-        initializeActions(dialog);
 
         dialog.add(createNotePanel(), BorderLayout.NORTH);
         dialog.add(new OfferPanel(), BorderLayout.CENTER);
@@ -25,40 +30,52 @@ public class ResumeDialog {
 
         dialog.setSize(400, 350);
         dialog.setLocationRelativeTo(frame);
-        dialog.setVisible(true);
+        return dialog;
     }
 
     private void initializeActions(JDialog dialog) {
-        fileButton.addActionListener(e -> addResumePathToLabel());
+        fileButton.addActionListener(e -> updateFileLabel());
         submitButton.addActionListener(e -> {
-            if (noteText.getText().isEmpty() || fileLabel.getText().equals("No file selected")) {
+            if (isFormValid()) {
+                saveResume(dialog);
+            } else {
                 JOptionPane.showMessageDialog(dialog, "All fields must be filled out.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
             }
-
-            saveResume(dialog);
         });
     }
 
+    private boolean isFormValid() {
+        return !noteText.getText().isEmpty() && !fileLabel.getText().equals("No file selected");
+    }
+
     private void saveResume(JDialog dialog) {
-        ResumeService.addResume(noteText.getText(), fileLabel.getText());
+        ResumeService.addResume(noteText.getText(), fileLabel.getText(), OffersService.getLinks());
         dialog.dispose();
     }
 
     private JPanel createNotePanel() {
         JPanel notePanel = new JPanel();
         notePanel.setLayout(new BoxLayout(notePanel, BoxLayout.Y_AXIS));
+        notePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JLabel noteLabel = new JLabel("Notes");
         noteLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        noteLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
-
-        noteText.setAlignmentX(Component.CENTER_ALIGNMENT);
         noteText.setMaximumSize(new Dimension(250, 25));
 
         notePanel.add(noteLabel);
+        notePanel.add(Box.createRigidArea(new Dimension(0, 5)));
         notePanel.add(noteText);
+
         return notePanel;
+    }
+
+    private JPanel createBottomPanel() {
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
+
+        bottomPanel.add(createFilePanel(), BorderLayout.WEST);
+        bottomPanel.add(submitButton, BorderLayout.EAST);
+        return bottomPanel;
     }
 
     private JPanel createFilePanel() {
@@ -68,21 +85,10 @@ public class ResumeDialog {
         return filePanel;
     }
 
-    private void addResumePathToLabel() {
+    private void updateFileLabel() {
         String path = GlobalFileChooser.chooseFile(0);
         if (path != null && !path.isEmpty()) {
             fileLabel.setText(path);
         }
-    }
-
-    private JPanel createBottomPanel() {
-        JPanel bottomPanel = new JPanel(new BorderLayout());
-        bottomPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
-
-        JPanel filePanel = createFilePanel();
-
-        bottomPanel.add(filePanel, BorderLayout.WEST);
-        bottomPanel.add(submitButton, BorderLayout.EAST);
-        return bottomPanel;
     }
 }

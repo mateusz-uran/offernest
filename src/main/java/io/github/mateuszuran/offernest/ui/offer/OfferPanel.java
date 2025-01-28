@@ -1,75 +1,74 @@
-package main.java.io.github.mateuszuran.offernest.ui.offer;
+package io.github.mateuszuran.offernest.ui.offer;
+
+
+import io.github.mateuszuran.offernest.logic.OffersService;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class OfferPanel extends JPanel {
-    private final JButton textButton = new JButton("Add");
+    private final JButton addButton = new JButton("Add");
     private final JPanel listPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-    private final JTextField text = new JTextField();
+    private final JTextField linkField = new JTextField();
 
 
     public OfferPanel() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        JLabel offerLabel = new JLabel("Offers");
-        offerLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        offerLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
 
-
-        add(offerLabel);
-        add(createTextPanel());
-        add(createOffersList());
-
+        add(createOfferLabel());
+        add(createInputPanel());
+        add(createOffersListPanel());
         initializeActions();
     }
 
-    private void initializeActions() {
-        textButton.addActionListener(e -> {
-            listPanel.add(createItemPanel(text.getText()));
-            listPanel.repaint();
-            listPanel.revalidate();
-        });
+    private JLabel createOfferLabel() {
+        JLabel offerLabel = new JLabel("Offers");
+        offerLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        return offerLabel;
     }
 
-    private JPanel createTextPanel() {
-        JPanel textPanel = new JPanel();
-        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.X_AXIS));
-        textPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+    private JPanel createInputPanel() {
+        JPanel inputPanel = new JPanel();
+        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
+        inputPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        linkField.setMaximumSize(new Dimension(200, 25));
+        inputPanel.add(linkField);
+        inputPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+        inputPanel.add(addButton);
 
-        text.setMinimumSize(new Dimension(100, 25));
-        text.setMaximumSize(new Dimension(150, 25));
-        text.setAlignmentX(Component.LEFT_ALIGNMENT);
-        textButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
-
-        textPanel.add(text);
-        textPanel.add(textButton);
-
-        return textPanel;
+        return inputPanel;
     }
 
-    private JPanel createItemPanel(String link) {
-        JPanel itemPanel = new JPanel(new BorderLayout());
-        JLabel item = new JLabel(link);
-        item.setPreferredSize(new Dimension(80, 30));
-        itemPanel.add(item, BorderLayout.WEST);
-        return itemPanel;
-    }
-
-    public JPanel createOffersList() {
-        // data to test
-        ArrayList<String> links = new ArrayList<>();
-        links.add("link1");
-        links.add("link2");
-        links.add("link3");
-
-        for (String link : links) {
-            listPanel.add(createItemPanel(link));
-        }
-
+    private JPanel createOffersListPanel() {
         listPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         return listPanel;
+    }
+
+    private void initializeActions() {
+        addButton.addActionListener(e -> addLink());
+    }
+
+    private void addLink() {
+        String link = linkField.getText().trim();
+        if (link.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Link cannot be empty.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        listPanel.add(createLinkItem(link));
+        listPanel.repaint();
+        listPanel.revalidate();
+
+        OffersService.gatherLinks(link);
+        linkField.setText("");
+    }
+
+    private JPanel createLinkItem(String link) {
+        JPanel itemPanel = new JPanel(new BorderLayout());
+        JLabel linkLabel = new JLabel(link);
+        itemPanel.add(linkLabel, BorderLayout.WEST);
+        return itemPanel;
     }
 }
