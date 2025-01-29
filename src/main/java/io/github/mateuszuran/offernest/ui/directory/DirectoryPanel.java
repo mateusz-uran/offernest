@@ -1,7 +1,8 @@
-package main.java.io.github.mateuszuran.offernest.ui.directory;
+package io.github.mateuszuran.offernest.ui.directory;
 
-import main.java.io.github.mateuszuran.offernest.config.ConfigManager;
-import main.java.io.github.mateuszuran.offernest.ui.GlobalFileChooser;
+
+import io.github.mateuszuran.offernest.config.ConfigManager;
+import io.github.mateuszuran.offernest.ui.GlobalFileChooser;
 
 import javax.swing.*;
 import java.awt.*;

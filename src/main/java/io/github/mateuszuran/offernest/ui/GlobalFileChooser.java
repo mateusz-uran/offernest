@@ -1,6 +1,5 @@
-package main.java.io.github.mateuszuran.offernest.ui;
+package io.github.mateuszuran.offernest.ui;
 
-import main.java.io.github.mateuszuran.offernest.config.ConfigManager;
 
 import javax.swing.*;
 import java.io.File;
