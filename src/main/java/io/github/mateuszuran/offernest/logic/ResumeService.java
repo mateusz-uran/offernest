@@ -43,7 +43,7 @@ public class ResumeService {
 
         try {
             Files.copy(sourceFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
-            PersistData.createJsonFile(new ResumeEntity(destinationPath.toString(), links));
+            PersistData.saveResumeEntity(new ResumeEntity(destinationPath.toString(), links));
             System.out.println("File copied to: " + destinationPath);
         } catch (IOException e) {
             System.err.println("Error copying file: " + e.getMessage());

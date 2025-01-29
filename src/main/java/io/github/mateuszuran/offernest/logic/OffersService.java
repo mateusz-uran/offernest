@@ -6,18 +6,21 @@ import java.util.List;
 
 public class OffersService {
 
-    private static final List<String> allLinks = Collections.synchronizedList(new ArrayList<>());
+    private final List<String> allLinks = Collections.synchronizedList(new ArrayList<>());
 
-    public static List<String> gatherLinks(String link) {
+    public void gatherLinks(String link) {
         allLinks.add(link);
-        return new ArrayList<>(allLinks);
     }
 
-    public static List<String> getLinks() {
-        return new ArrayList<>(allLinks);
+    public List<String> getLinks() {
+        return allLinks;
     }
 
-    public static boolean checkListSize() {
+    public boolean checkListSize() {
         return allLinks.isEmpty();
+    }
+
+    public void removeLink(String link) {
+        allLinks.remove(link);
     }
 }

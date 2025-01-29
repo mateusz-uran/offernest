@@ -4,18 +4,19 @@ package io.github.mateuszuran.offernest.ui.offer;
 import io.github.mateuszuran.offernest.logic.OffersService;
 
 import javax.swing.*;
+import java.util.HashMap;
 import java.util.List;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class OfferPanel extends JPanel {
     private final JButton addButton = new JButton("Add");
     private final JButton removeButton = new JButton("Remove");
     private final JPanel listPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
     private final JTextField linkField = new JTextField();
-    private final List<JPanel> offerItems = new ArrayList<>();
-
-
+    private final Map<JPanel, JCheckBox> offerItems = new HashMap<>();
+    private final OffersService offers = new OffersService();
 
     public OfferPanel() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -66,20 +67,6 @@ public class OfferPanel extends JPanel {
             return;
         }
 
-        JPanel itemPanel = createLinkItem(link);
-        listPanel.add(itemPanel);
-        offerItems.add(itemPanel);
-
-        listPanel.repaint();
-        listPanel.revalidate();
-
-        OffersService.gatherLinks(link);
-        linkField.setText("");
-
-        updateRemoveButtonState();
-    }
-
-    private JPanel createLinkItem(String link) {
         JPanel itemPanel = new JPanel(new BorderLayout());
         JLabel linkLabel = new JLabel(link);
         JCheckBox checkBox = new JCheckBox();
@@ -87,21 +74,34 @@ public class OfferPanel extends JPanel {
         itemPanel.add(linkLabel, BorderLayout.WEST);
         itemPanel.add(checkBox, BorderLayout.EAST);
 
-        return itemPanel;
+        listPanel.add(itemPanel);
+        offerItems.put(itemPanel, checkBox);
+
+        listPanel.repaint();
+        listPanel.revalidate();
+
+        offers.gatherLinks(link);
+        linkField.setText("");
+
+        updateRemoveButtonState();
     }
 
     private void removeSelectedLinks() {
         List<JPanel> itemsToRemove = new ArrayList<>();
 
-        for (JPanel item : offerItems) {
-            JCheckBox checkBox = (JCheckBox) item.getComponent(1);
-            if (checkBox.isSelected()) {
-                listPanel.remove(item);
-                itemsToRemove.add(item);
+        for (Map.Entry<JPanel, JCheckBox> entry : offerItems.entrySet()) {
+            if (entry.getValue().isSelected()) {
+                listPanel.remove(entry.getKey());
+                itemsToRemove.add(entry.getKey());
+
+                JLabel linkLabel = (JLabel) entry.getKey().getComponent(0);
+                offers.removeLink(linkLabel.getText());
             }
         }
 
-        offerItems.removeAll(itemsToRemove);
+        for (JPanel panel : itemsToRemove) {
+            offerItems.remove(panel);
+        }
 
         listPanel.repaint();
         listPanel.revalidate();
@@ -110,6 +110,10 @@ public class OfferPanel extends JPanel {
     }
 
     private void updateRemoveButtonState() {
-        removeButton.setEnabled(!OffersService.checkListSize());
+        removeButton.setEnabled(!offers.checkListSize());
+    }
+
+    public List<String> getAllOffersLinks() {
+        return offers.getLinks();
     }
 }

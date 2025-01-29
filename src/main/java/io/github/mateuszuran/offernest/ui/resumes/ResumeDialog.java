@@ -13,6 +13,7 @@ public class ResumeDialog {
     private final JButton submitButton = new JButton("Save");
     private final JButton fileButton = new JButton("Search");
     private final JLabel fileLabel = new JLabel("No file selected");
+    private final OfferPanel offerPanel = new OfferPanel();
 
     public ResumeDialog(JFrame frame) {
         JDialog dialog = createDialogFrame(frame);
@@ -25,7 +26,7 @@ public class ResumeDialog {
         dialog.setLayout(new BorderLayout());
 
         dialog.add(createNotePanel(), BorderLayout.NORTH);
-        dialog.add(new OfferPanel(), BorderLayout.CENTER);
+        dialog.add(offerPanel, BorderLayout.CENTER);
         dialog.add(createBottomPanel(), BorderLayout.SOUTH);
 
         dialog.setSize(400, 350);
@@ -49,7 +50,7 @@ public class ResumeDialog {
     }
 
     private void saveResume(JDialog dialog) {
-        ResumeService.addResume(noteText.getText(), fileLabel.getText(), OffersService.getLinks());
+        ResumeService.addResume(noteText.getText(), fileLabel.getText(), offerPanel.getAllOffersLinks());
         dialog.dispose();
     }
 

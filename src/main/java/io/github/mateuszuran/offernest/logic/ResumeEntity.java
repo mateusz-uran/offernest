@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ResumeEntity {
     private final String resumePath;
-    private final List<String> offers;
+    private List<String> offers;
 
     @JsonCreator
     public ResumeEntity(@JsonProperty("resumePath") String resumePath,
@@ -22,6 +22,10 @@ public class ResumeEntity {
 
     public List<String> getOffers() {
         return offers;
+    }
+
+    public void setOffers(List<String> offers) {
+        this.offers = offers;
     }
 
     @Override
