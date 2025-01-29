@@ -1,7 +1,7 @@
 package io.github.mateuszuran.offernest.ui.offer;
 
 
-import io.github.mateuszuran.offernest.logic.OffersService;
+import io.github.mateuszuran.offernest.service.OffersService;
 
 import javax.swing.*;
 import java.util.HashMap;

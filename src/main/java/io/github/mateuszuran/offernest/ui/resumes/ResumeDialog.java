@@ -1,7 +1,6 @@
 package io.github.mateuszuran.offernest.ui.resumes;
 
-import io.github.mateuszuran.offernest.logic.OffersService;
-import io.github.mateuszuran.offernest.logic.ResumeService;
+import io.github.mateuszuran.offernest.service.ResumeService;
 import io.github.mateuszuran.offernest.ui.GlobalFileChooser;
 import io.github.mateuszuran.offernest.ui.offer.OfferPanel;
 

@@ -1,7 +1,7 @@
 package io.github.mateuszuran.offernest.ui.mainframe;
 
-import io.github.mateuszuran.offernest.logic.PersistData;
-import io.github.mateuszuran.offernest.logic.ResumeEntity;
+import io.github.mateuszuran.offernest.service.logic.PersistData;
+import io.github.mateuszuran.offernest.model.ResumeEntity;
 import io.github.mateuszuran.offernest.ui.directory.DirectoryPanel;
 import io.github.mateuszuran.offernest.ui.resumes.ResumeDialog;
 

@@ -1,8 +1,9 @@
-package io.github.mateuszuran.offernest.logic;
+package io.github.mateuszuran.offernest.service.logic;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mateuszuran.offernest.config.ConfigManager;
+import io.github.mateuszuran.offernest.model.ResumeEntity;
 
 import java.io.File;
 import java.io.FileReader;
@@ -32,30 +33,29 @@ public class PersistData {
         return new ArrayList<>();
     }
 
-    public static void saveResumeEntity(ResumeEntity newData) {
+    public static void saveResume(ResumeEntity data) {
         String filePath = ConfigManager.readDirectory() + File.separator + OFFER_LINKS;
         List<ResumeEntity> existingData = readJsonFile();
 
-        boolean exists = false;
+        boolean entityExists = false;
 
         for (ResumeEntity entity : existingData) {
-            if (entity.getResumePath().equals(newData.getResumePath())) {
-                List<String> updatedOffers = new ArrayList<>(entity.getOffers());
+            if (entity.getResumePath().equals(data.getResumePath())) {
+                List<String> actualOffers = entity.getOffers();
 
-                for (String offer : newData.getOffers()) {
-                    if (!updatedOffers.contains(offer)) {
-                        updatedOffers.add(offer);
+                for (String offer : data.getOffers()) {
+                    if (!actualOffers.contains(offer)) {
+                        actualOffers.add(offer);
                     }
                 }
-
-                entity.setOffers(updatedOffers);
-                exists = true;
+                entity.setOffers(actualOffers);
+                entityExists = true;
                 break;
             }
         }
 
-        if (!exists) {
-            ResumeEntity freshEntity = new ResumeEntity(newData.getResumePath(), new ArrayList<>(newData.getOffers()));
+        if (!entityExists) {
+            ResumeEntity freshEntity = new ResumeEntity(data.getResumePath(), new ArrayList<>(data.getOffers()));
             existingData.add(freshEntity);
         }
 

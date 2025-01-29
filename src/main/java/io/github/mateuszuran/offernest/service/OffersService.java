@@ -1,4 +1,4 @@
-package io.github.mateuszuran.offernest.logic;
+package io.github.mateuszuran.offernest.service;
 
 import java.util.ArrayList;
 import java.util.Collections;

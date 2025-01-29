@@ -1,6 +1,8 @@
-package io.github.mateuszuran.offernest.logic;
+package io.github.mateuszuran.offernest.service;
 
 import io.github.mateuszuran.offernest.config.ConfigManager;
+import io.github.mateuszuran.offernest.service.logic.PersistData;
+import io.github.mateuszuran.offernest.model.ResumeEntity;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,7 +45,7 @@ public class ResumeService {
 
         try {
             Files.copy(sourceFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
-            PersistData.saveResumeEntity(new ResumeEntity(destinationPath.toString(), links));
+            PersistData.saveResume(new ResumeEntity(destinationPath.toString(), links));
             System.out.println("File copied to: " + destinationPath);
         } catch (IOException e) {
             System.err.println("Error copying file: " + e.getMessage());

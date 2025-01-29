@@ -1,4 +1,4 @@
-package io.github.mateuszuran.offernest.logic;
+package io.github.mateuszuran.offernest.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
