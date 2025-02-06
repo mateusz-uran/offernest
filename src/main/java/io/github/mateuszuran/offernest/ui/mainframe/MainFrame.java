@@ -13,16 +13,6 @@ public class MainFrame extends JFrame {
     public MainFrame() {
         createWindow();
         createUpperPanel();
-
-        JButton testButton = new JButton("test");
-        testButton.addActionListener(e -> {
-            var res = PersistData.readJsonFile();
-            for (ResumeEntity o : res) {
-                System.out.println(o);
-            }
-        });
-
-        add(testButton);
     }
 
     private void createWindow() {
@@ -39,11 +29,9 @@ public class MainFrame extends JFrame {
         JPanel upperPanel = new JPanel(new BorderLayout());
         upperPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        // Create "Add resume" button panel
         JPanel buttonPanel = createButtonPanel();
         upperPanel.add(buttonPanel);
 
-        // Create directory panel
         DirectoryPanel directoryPanel = new DirectoryPanel();
         upperPanel.add(directoryPanel, BorderLayout.EAST);
 

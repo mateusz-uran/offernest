@@ -1,5 +1,7 @@
 package io.github.mateuszuran.offernest.service;
 
+import io.github.mateuszuran.offernest.service.logic.PersistData;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,6 +9,10 @@ import java.util.List;
 public class OffersService {
 
     private final List<String> allLinks = Collections.synchronizedList(new ArrayList<>());
+
+    public static List<String> getAllOffers(String resumePath) {
+        return PersistData.getAllOffers(resumePath);
+    }
 
     public void gatherLinks(String link) {
         allLinks.add(link);

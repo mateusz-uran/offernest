@@ -24,6 +24,16 @@ public class ResumeService {
         copyFileToDirectory(new File(filePath), subdirectory, links);
     }
 
+    public static List<ResumeEntity> getAllResumes() {
+        return PersistData.getResumes();
+    }
+
+    public static ResumeEntity getSingleResume(String resumePath) {
+        return PersistData.getSingleResume(resumePath);
+    }
+
+
+
     private static File createOrGetSubdirectory(String note) {
         String directoryName = note.isEmpty() ? "default_resume" : note.replaceAll(" ", "_");
         String targetDirectoryPath = ConfigManager.readDirectory() + File.separator + directoryName;
