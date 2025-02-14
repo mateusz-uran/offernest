@@ -30,6 +30,20 @@ public class OfferPanel extends JPanel {
         removeButton.setEnabled(false);
     }
 
+    public OfferPanel(List<String> offers) {
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        add(createOfferLabel());
+        add(createInputPanel());
+        add(createOffersListPanel());
+        initializeActions();
+
+        removeButton.setEnabled(false);
+
+        populateOffers(offers);
+    }
+
     private JLabel createOfferLabel() {
         JLabel offerLabel = new JLabel("Offers");
         offerLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -56,13 +70,12 @@ public class OfferPanel extends JPanel {
     }
 
     private void initializeActions() {
-        addButton.addActionListener(e -> addLink());
+        addButton.addActionListener(e -> addLink(linkField.getText().trim()));
         removeButton.addActionListener(e -> removeSelectedLinks());
     }
 
-    private void addLink() {
-        String link = linkField.getText().trim();
-        if (link.isEmpty()) {
+    private void addLink(String link) {
+        if (link == null || link.trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Link cannot be empty.", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -115,5 +128,13 @@ public class OfferPanel extends JPanel {
 
     public List<String> getAllOffersLinks() {
         return offers.getLinks();
+    }
+
+    private void populateOffers(List<String> initialOffers) {
+        if (initialOffers != null) {
+            for (String link : initialOffers) {
+                addLink(link);
+            }
+        }
     }
 }

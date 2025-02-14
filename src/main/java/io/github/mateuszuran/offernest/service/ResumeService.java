@@ -4,6 +4,7 @@ import io.github.mateuszuran.offernest.config.ConfigManager;
 import io.github.mateuszuran.offernest.service.logic.PersistData;
 import io.github.mateuszuran.offernest.model.ResumeEntity;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,7 +33,17 @@ public class ResumeService {
         return PersistData.getSingleResume(resumePath);
     }
 
+    public void openFile(String path) {
+        File file = new File(path);
 
+        if (Desktop.isDesktopSupported()) {
+            try {
+                Desktop.getDesktop().open(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     private static File createOrGetSubdirectory(String note) {
         String directoryName = note.isEmpty() ? "default_resume" : note.replaceAll(" ", "_");
