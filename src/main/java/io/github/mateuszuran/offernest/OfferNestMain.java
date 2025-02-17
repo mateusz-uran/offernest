@@ -15,7 +15,7 @@ public class OfferNestMain {
     public static void main(String[] args) {
         ApplicationConfig config = new ApplicationConfig();
         FileService fileService = new FileService(config);
-        fileService.saveResume(new ResumeEntity("test apki", "random path", List.of()));
+        fileService.saveResume(new ResumeEntity("zapisuje pdf", "D:/temp_folder/temp2.pdf", List.of()));
 //        config.saveApplicationConfig("D:/Dokumenty/aplikowanko");
     }
 }
