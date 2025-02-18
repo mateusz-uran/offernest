@@ -23,31 +23,72 @@ public class JsonService {
     /**
      * Write data to JSON file (path to saved PDF file and array of offers).
      */
-    public void writeToJsonFile(String resumePath, List<String> offers) {
+    public void writeToJsonFile(String pdfPath, List<String> offers) {
 
         createJsonFile().ifPresent(path -> {
             var jsonContent = readJsonFile(path);
 
-            // if json array is empty -> create ResumeEntity object and add to file
-            // if json array contains ResumeEntity objects -> loop list and find object with given resumePath -> if not exists add to list and update json
-            // if json array contains ResumeEntity objects -> loop list and find object with given resumePath -> if exists update offers and update json
-
             if (jsonContent.isEmpty()) {
-                addResumeEntity(jsonContent, resumePath, offers, path);
+                System.out.println("Adding entity to json file!!");
+                addResumeEntity(jsonContent, new ResumeEntity(pdfPath, offers), path);
+            } else {
+                System.out.println("Updating json file!");
+                updateJsonList(jsonContent, new ResumeEntity(pdfPath, offers), path);
             }
         });
     }
 
-    private void addResumeEntity(List<ResumeEntity> entities, String pdfPath, List<String> offers, String path) {
-        entities.add(new ResumeEntity(pdfPath, offers));
+    /**
+     * Loop existing entities:
+     * - when entity exists update offers
+     * - when entity not exists add to existing list
+     * */
+    private void updateJsonList(List<ResumeEntity> entities, ResumeEntity data, String jsonPath) {
+        boolean entityExists = false;
 
-        try (FileWriter writer = new FileWriter(path)) {
+        for (ResumeEntity entity : entities) {
+            if (entity.getPdfPath().equals(data.getPdfPath())) {
+                List<String> offers = entity.getOffers();
+
+                for (String offer : data.getOffers()) {
+                    if (!offers.contains(offer)) {
+                        offers.add(offer);
+                    }
+                }
+                entity.setOffers(offers);
+                entityExists = true;
+                break;
+            }
+        }
+
+        if (!entityExists) {
+            entities.add(data);
+        }
+        writeToFile(jsonPath, entities);
+    }
+
+    /**
+     * Add new ResumeEntity to empty JSON file.
+     */
+    private void addResumeEntity(List<ResumeEntity> entities, ResumeEntity entity, String jsonPath) {
+        entities.add(entity);
+        writeToFile(jsonPath, entities);
+    }
+
+    /**
+     * Write to json file list of ResumeEntities
+     * */
+    private void writeToFile(String filePath, List<ResumeEntity> entities) {
+        try (FileWriter writer = new FileWriter(filePath)) {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(writer, entities);
         } catch (IOException e) {
             System.err.println("Error when adding new entities: " + e.getMessage());
         }
     }
 
+    /**
+     * Read json file with ResumeEntities and return list of objects.
+     * */
     private List<ResumeEntity> readJsonFile(String path) {
         try (FileReader reader = new FileReader(path)) {
             return objectMapper.readValue(reader, new TypeReference<>() {

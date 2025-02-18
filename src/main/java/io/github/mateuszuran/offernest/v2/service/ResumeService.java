@@ -22,7 +22,7 @@ public class ResumeService {
      * */
     public void saveResumeEntityDataToJson(ResumeEntity entity) {
         saveResumePdf(entity.getPdfPath(), entity.getNote())
-                .ifPresent(path -> jsonService.writeToJsonFile(path.toString(), entity.getOffers()));
+                .ifPresent(path -> jsonService.writeToJsonFile(path.toUri().getPath(), entity.getOffers()));
     }
 
     /**
