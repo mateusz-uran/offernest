@@ -7,15 +7,21 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class ApplicationConfig {
-    private final String CONFIG_FILE = "config.properties";
-    private final String DIRECTORY_URL = "directory_url";
-    private final Properties props = new Properties();
+    private final static String CONFIG_FILE = "config.properties";
+    private final static String DIRECTORY_URL = "directory_url";
+    private final static Properties props = new Properties();
 
-    public boolean configFileExists() {
+    /**
+     * Check if config,properties file exists.
+     * */
+    public static boolean configFileExists() {
         return new File(CONFIG_FILE).exists();
     }
 
-    public String readApplicationConfig() {
+    /**
+     * Read main directory path from config.properties file.
+     * */
+    public static String readApplicationConfig() {
         if (!configFileExists()) {
             System.out.println("Config file not found.");
             return null;
@@ -30,7 +36,10 @@ public class ApplicationConfig {
         }
     }
 
-    public void saveApplicationConfig(String directory) {
+    /**
+     * Create config.properties file and save path to main directory.
+     * */
+    public static void saveApplicationConfig(String directory) {
         props.setProperty(DIRECTORY_URL, directory);
 
         try (FileOutputStream output = new FileOutputStream(CONFIG_FILE)) {

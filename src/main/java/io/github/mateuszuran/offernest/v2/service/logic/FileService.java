@@ -1,4 +1,4 @@
-package io.github.mateuszuran.offernest.v2.logic;
+package io.github.mateuszuran.offernest.v2.service.logic;
 
 import io.github.mateuszuran.offernest.v2.config.ApplicationConfig;
 import io.github.mateuszuran.offernest.v2.entity.ResumeEntity;
@@ -10,34 +10,32 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Optional;
 
 public class FileService {
-    private final ApplicationConfig config;
 
-    public FileService(ApplicationConfig config) {
-        this.config = config;
-    }
-
-    public void saveResume(ResumeEntity entity) {
-        File file = new File(entity.getPdfPath());
+    public Optional<Path> saveResume(String pdfPath, String resumeNote) {
+        File file = new File(pdfPath);
 
         if (!isPdfFile(file)) {
             System.out.println("File must be a valid PDF.");
-            return;
+            return Optional.empty();
         }
 
-        File resumeDirectory = createResumeDirectory(entity.getNote());
-        copyFileToResumeDirectory(file, resumeDirectory);
+        File resumeDirectory = createResumeDirectory(resumeNote);
+        return Optional.ofNullable(copyFileToResumeDirectory(file, resumeDirectory));
     }
 
-    private void copyFileToResumeDirectory(File filePath, File resumeDirectory) {
+    private Path copyFileToResumeDirectory(File filePath, File resumeDirectory) {
         Path destinationPath = Paths.get(resumeDirectory.getAbsolutePath(), filePath.getName());
 
         try {
             Files.copy(filePath.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
             System.out.println("File copied to: " + destinationPath);
+            return destinationPath;
         } catch (IOException e) {
             System.err.println("Error copying file: " + e.getMessage());
+            return null;
         }
     }
 
@@ -61,8 +59,7 @@ public class FileService {
     private File createResumeDirectory(String note) {
         String directoryName = (note == null || note.isBlank() ? "default" : note.replaceAll("\\s+", "_"));
 
-
-        var mainDirectory = config.readApplicationConfig();
+        var mainDirectory = ApplicationConfig.readApplicationConfig();
         if (mainDirectory == null || mainDirectory.isBlank()) {
             throw new IllegalStateException("Main directory is not set in config.");
         }

@@ -1,8 +1,10 @@
 package io.github.mateuszuran.offernest;
 
-import io.github.mateuszuran.offernest.v2.config.ApplicationConfig;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mateuszuran.offernest.v2.entity.ResumeEntity;
-import io.github.mateuszuran.offernest.v2.logic.FileService;
+import io.github.mateuszuran.offernest.v2.service.ResumeService;
+import io.github.mateuszuran.offernest.v2.service.logic.FileService;
+import io.github.mateuszuran.offernest.v2.service.logic.JsonService;
 
 import java.util.List;
 
@@ -13,13 +15,14 @@ public class OfferNestMain {
 //    }
 
     public static void main(String[] args) {
-        ApplicationConfig config = new ApplicationConfig();
-        FileService fileService = new FileService(config);
-        fileService.saveResume(new ResumeEntity("zapisuje pdf", "D:/temp_folder/temp2.pdf", List.of()));
-//        config.saveApplicationConfig("D:/Dokumenty/aplikowanko");
+        FileService fileService = new FileService();
+        JsonService jsonService = new JsonService(new ObjectMapper());
+        ResumeService resumeService = new ResumeService(fileService, jsonService);
+
+        // call when adding new resume entity
+        resumeService.saveResumeEntityDataToJson(new ResumeEntity("notka tego", "D:/temp_folder/temp3.pdf", List.of("of1")));
+
+        // call when updating existing resume path with new offers or when updating existing offers
+//        resumeService.updateResumeEntity("existing resume path", List.of("of1"));
     }
 }
-
-/*
-1. Open and and check
-* */

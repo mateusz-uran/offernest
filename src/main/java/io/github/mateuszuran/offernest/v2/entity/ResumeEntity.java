@@ -1,11 +1,21 @@
 package io.github.mateuszuran.offernest.v2.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 public class ResumeEntity {
     private String note;
     private String pdfPath;
     private List<String> offers;
+
+    @JsonCreator
+    public ResumeEntity(@JsonProperty("pdfPath") String pdfPath,
+                        @JsonProperty("offers") List<String> offers) {
+        this.pdfPath = pdfPath;
+        this.offers = offers;
+    }
 
     public ResumeEntity(String note, String pdfPath, List<String> offers) {
         this.note = note;
