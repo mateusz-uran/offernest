@@ -30,8 +30,7 @@ public class ResumeService {
                                     removeEntity);
 
                             if (removeData && removeEntity) {
-                                System.out.println("Deleting folder");
-                                fileService.deleteDirectory(path);
+                                fileService.deleteDirectory(path.getParent());
                             }
                         }
                 );

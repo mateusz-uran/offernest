@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 public class FileService {
 
     public Optional<Path> saveResume(String pdfPath, String resumeNote) {
-        File file = new File(pdfPath);
+        File file = new File(pdfPath.replaceFirst("^/+", ""));
 
         if (!isPdfFile(file)) {
             System.out.println("File " + file.getPath() + " must be a valid PDF!");
@@ -25,19 +25,33 @@ public class FileService {
         }
 
         if (resumeNote == null) {
-            return Optional.of(Paths.get(pdfPath.replaceFirst("^/+", "")));
+            return Optional.of(Paths.get(file.getPath()));
         }
 
         File resumeDirectory = createResumeDirectory(resumeNote);
         return Optional.ofNullable(copyFileToResumeDirectory(file, resumeDirectory));
     }
 
-    // TODO: FIX THIS SHIT
     public void deleteDirectory(Path directoryToDelete) {
+        if (directoryToDelete == null || Files.notExists(directoryToDelete)) {
+            System.out.println("Directory does not exist: " + directoryToDelete);
+            return;
+        }
+
+        if (Files.isRegularFile(directoryToDelete)) {
+            System.out.println("Given path is a file, not a directory: " + directoryToDelete);
+            return;
+        }
+
         try (Stream<Path> pathStream = Files.walk(directoryToDelete)) {
-            pathStream.sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
+            pathStream.sorted(Comparator.reverseOrder()).forEach(path -> {
+                try {
+                    Files.delete(path);
+                } catch (IOException e) {
+                    System.err.println("Failed to delete: " + path + " - " + e.getMessage());
+                }
+            });
+            System.out.println("Deleted folder: " + directoryToDelete);
         } catch (IOException e) {
             System.err.println("Error while deleting directory: " + e.getMessage());
         }
