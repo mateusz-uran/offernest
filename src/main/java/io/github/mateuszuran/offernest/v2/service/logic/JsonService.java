@@ -23,61 +23,67 @@ public class JsonService {
     /**
      * Write data to JSON file (path to saved PDF file and array of offers).
      */
-    public void writeToJsonFile(String pdfPath, List<String> offers) {
+    public void writeToJsonFile(String pdfPath, List<String> offers, boolean removeData, boolean removeEntity) {
 
         createJsonFile().ifPresent(path -> {
             var jsonContent = readJsonFile(path);
 
-            if (jsonContent.isEmpty()) {
-                System.out.println("Adding entity to json file!!");
-                addResumeEntity(jsonContent, new ResumeEntity(pdfPath, offers), path);
+            if (removeData) {
+                removeResumesOrOffers(jsonContent, new ResumeEntity(pdfPath, offers), path, removeEntity);
             } else {
-                System.out.println("Updating json file!");
-                updateJsonList(jsonContent, new ResumeEntity(pdfPath, offers), path);
+                addResumesOrOffers(jsonContent, new ResumeEntity(pdfPath, offers), path);
             }
         });
     }
 
     /**
      * Loop existing entities:
-     * - when entity exists update offers
-     * - when entity not exists add to existing list
-     * */
-    private void updateJsonList(List<ResumeEntity> entities, ResumeEntity data, String jsonPath) {
-        boolean entityExists = false;
+     * - when entity exists and removeEntity flag is true - delete entity
+     * - when entity exists and removeEntity flag is false - delete selected offers from entity
+     */
+    private void removeResumesOrOffers(List<ResumeEntity> entities, ResumeEntity data, String jsonPath, boolean removeEntity) {
+        entities.removeIf(entity -> entity.getPdfPath().equals(data.getPdfPath()) && removeEntity);
 
         for (ResumeEntity entity : entities) {
             if (entity.getPdfPath().equals(data.getPdfPath())) {
-                List<String> offers = entity.getOffers();
-
-                for (String offer : data.getOffers()) {
-                    if (!offers.contains(offer)) {
-                        offers.add(offer);
-                    }
-                }
-                entity.setOffers(offers);
-                entityExists = true;
-                break;
+                entity.getOffers().removeAll(data.getOffers());
             }
         }
 
-        if (!entityExists) {
-            entities.add(data);
-        }
         writeToFile(jsonPath, entities);
     }
 
     /**
-     * Add new ResumeEntity to empty JSON file.
+     * Loop existing entities:
+     * - when entity exists add new offers to list
+     * - when entity not exists add to new ResumeEntity to list
      */
-    private void addResumeEntity(List<ResumeEntity> entities, ResumeEntity entity, String jsonPath) {
-        entities.add(entity);
+    private void addResumesOrOffers(List<ResumeEntity> entities, ResumeEntity data, String jsonPath) {
+        if (entities.isEmpty()) {
+            entities.add(data);
+            writeToFile(jsonPath, entities);
+            return;
+        }
+
+        for (ResumeEntity entity : entities) {
+            if (entity.getPdfPath().equals(data.getPdfPath())) {
+                for (String offer : data.getOffers()) {
+                    if (!entity.getOffers().contains(offer)) {
+                        entity.getOffers().add(offer);
+                    }
+                }
+                writeToFile(jsonPath, entities);
+                return;
+            }
+        }
+
+        entities.add(data);
         writeToFile(jsonPath, entities);
     }
 
     /**
      * Write to json file list of ResumeEntities
-     * */
+     */
     private void writeToFile(String filePath, List<ResumeEntity> entities) {
         try (FileWriter writer = new FileWriter(filePath)) {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(writer, entities);
@@ -88,7 +94,7 @@ public class JsonService {
 
     /**
      * Read json file with ResumeEntities and return list of objects.
-     * */
+     */
     private List<ResumeEntity> readJsonFile(String path) {
         try (FileReader reader = new FileReader(path)) {
             return objectMapper.readValue(reader, new TypeReference<>() {

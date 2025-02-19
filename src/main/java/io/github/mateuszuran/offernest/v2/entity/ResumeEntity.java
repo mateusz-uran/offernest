@@ -46,4 +46,13 @@ public class ResumeEntity {
     public void setOffers(List<String> offers) {
         this.offers = offers;
     }
+
+    @Override
+    public String toString() {
+        return "ResumeEntity{" +
+                "note='" + note + '\'' +
+                ", pdfPath='" + pdfPath + '\'' +
+                ", offers=" + offers +
+                '}';
+    }
 }
