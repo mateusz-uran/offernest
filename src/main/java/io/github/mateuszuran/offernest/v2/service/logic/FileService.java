@@ -10,7 +10,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Comparator;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class FileService {
 
@@ -18,12 +20,27 @@ public class FileService {
         File file = new File(pdfPath);
 
         if (!isPdfFile(file)) {
-            System.out.println("File must be a valid PDF.");
+            System.out.println("File " + file.getPath() + " must be a valid PDF!");
             return Optional.empty();
+        }
+
+        if (resumeNote == null) {
+            return Optional.of(Paths.get(pdfPath.replaceFirst("^/+", "")));
         }
 
         File resumeDirectory = createResumeDirectory(resumeNote);
         return Optional.ofNullable(copyFileToResumeDirectory(file, resumeDirectory));
+    }
+
+    // TODO: FIX THIS SHIT
+    public void deleteDirectory(Path directoryToDelete) {
+        try (Stream<Path> pathStream = Files.walk(directoryToDelete)) {
+            pathStream.sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        } catch (IOException e) {
+            System.err.println("Error while deleting directory: " + e.getMessage());
+        }
     }
 
     private Path copyFileToResumeDirectory(File filePath, File resumeDirectory) {
@@ -57,7 +74,7 @@ public class FileService {
 
 
     private File createResumeDirectory(String note) {
-        String directoryName = (note == null || note.isBlank() ? "default" : note.replaceAll("\\s+", "_"));
+        String directoryName = note.replaceAll("\\s+", "_");
 
         var mainDirectory = ApplicationConfig.readApplicationConfig();
         if (mainDirectory == null || mainDirectory.isBlank()) {

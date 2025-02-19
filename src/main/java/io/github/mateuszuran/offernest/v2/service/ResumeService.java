@@ -22,12 +22,19 @@ public class ResumeService {
      */
     public void saveResumeEntityDataToJson(ResumeEntity entity, boolean removeData, boolean removeEntity) {
         saveResumePdf(entity.getPdfPath(), entity.getNote())
-                .ifPresent(path -> jsonService.writeToJsonFile(
-                        path.toUri().getPath(),
-                        entity.getOffers(),
-                        removeData,
-                        removeEntity
-                ));
+                .ifPresent(path -> {
+                            jsonService.writeToJsonFile(
+                                    path.toUri().getPath(),
+                                    entity.getOffers(),
+                                    removeData,
+                                    removeEntity);
+
+                            if (removeData && removeEntity) {
+                                System.out.println("Deleting folder");
+                                fileService.deleteDirectory(path);
+                            }
+                        }
+                );
     }
 
 

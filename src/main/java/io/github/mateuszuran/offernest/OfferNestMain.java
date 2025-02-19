@@ -20,6 +20,6 @@ public class OfferNestMain {
         ResumeService resumeService = new ResumeService(fileService, jsonService);
 
         // call when updating entity
-        resumeService.saveResumeEntityDataToJson(new ResumeEntity("kupa", "D:/temp_folder/temp.pdf", List.of("of66")), true, true);
+        resumeService.saveResumeEntityDataToJson(new ResumeEntity("first dir", "/D:/temp_folder/temp.pdf", List.of()), false, false);
     }
 }
