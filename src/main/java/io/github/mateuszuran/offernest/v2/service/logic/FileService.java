@@ -16,6 +16,10 @@ import java.util.stream.Stream;
 
 public class FileService {
 
+    /**
+     * Save resume pdf file when file extension is correct. Method returning given path when
+     * note is empty otherwise newly created path to PDF file.
+     * */
     public Optional<Path> saveResume(String pdfPath, String resumeNote) {
         File file = new File(pdfPath.replaceFirst("^/+", ""));
 
@@ -32,6 +36,9 @@ public class FileService {
         return Optional.ofNullable(copyFileToResumeDirectory(file, resumeDirectory));
     }
 
+    /**
+     * Delete PDF directory with pdf file.
+     * */
     public void deleteDirectory(Path directoryToDelete) {
         if (directoryToDelete == null || Files.notExists(directoryToDelete)) {
             System.out.println("Directory does not exist: " + directoryToDelete);
@@ -57,6 +64,9 @@ public class FileService {
         }
     }
 
+    /**
+     * Copy given PDF file to newly created directory.
+     * */
     private Path copyFileToResumeDirectory(File filePath, File resumeDirectory) {
         Path destinationPath = Paths.get(resumeDirectory.getAbsolutePath(), filePath.getName());
 
@@ -70,6 +80,9 @@ public class FileService {
         }
     }
 
+    /**
+     * Check if given file is actually an PDF file.
+     * */
     private boolean isPdfFile(File filePath) {
         if (!filePath.exists() || !filePath.isFile()) {
             return false;
@@ -86,7 +99,9 @@ public class FileService {
         return false;
     }
 
-
+    /**
+     * Create resume directory to store PDF file from given note.
+     * */
     private File createResumeDirectory(String note) {
         String directoryName = note.replaceAll("\\s+", "_");
 
