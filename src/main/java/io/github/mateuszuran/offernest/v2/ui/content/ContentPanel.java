@@ -34,7 +34,7 @@ public class ContentPanel extends JPanel {
     }
 
     private void gatherContent() {
-        List<ResumeEntity> entities = getResumeService().getResumeEntities();
+        List<ResumeEntity> entities = ResumeService.getInstance().getResumeEntities();
 
         if (entities.isEmpty()) {
             add(new JLabel("No resumes found."));

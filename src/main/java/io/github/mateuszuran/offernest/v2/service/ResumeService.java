@@ -1,5 +1,6 @@
 package io.github.mateuszuran.offernest.v2.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mateuszuran.offernest.v2.entity.ResumeEntity;
 import io.github.mateuszuran.offernest.v2.service.logic.FileService;
 import io.github.mateuszuran.offernest.v2.service.logic.JsonService;
@@ -9,12 +10,24 @@ import java.util.List;
 import java.util.Optional;
 
 public class ResumeService {
+    private static volatile ResumeService instance;
     private final FileService fileService;
     private final JsonService jsonService;
 
     public ResumeService(FileService fileService, JsonService jsonService) {
         this.fileService = fileService;
         this.jsonService = jsonService;
+    }
+
+    public static ResumeService getInstance() {
+        if (instance == null) {
+            synchronized (ResumeService.class) {
+                if (instance == null) {
+                    instance = new ResumeService(new FileService(), new JsonService(new ObjectMapper()));
+                }
+            }
+        }
+        return instance;
     }
 
     public List<ResumeEntity> getResumeEntities() {
