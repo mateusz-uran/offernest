@@ -1,5 +1,6 @@
 package io.github.mateuszuran.offernest.v2.ui;
 
+import io.github.mateuszuran.offernest.v2.ui.content.ContentPanel;
 import io.github.mateuszuran.offernest.v2.ui.directory.DirectoryPanel;
 
 import javax.swing.*;
@@ -17,5 +18,15 @@ public class NestFrame extends JFrame {
         setVisible(true);
 
         add(new DirectoryPanel(), BorderLayout.NORTH);
+        add(content(), BorderLayout.CENTER);
+    }
+
+    private JScrollPane content() {
+        ContentPanel contentPanel = new ContentPanel();
+        JScrollPane scrollPane = new JScrollPane(contentPanel);
+
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        return scrollPane;
     }
 }

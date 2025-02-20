@@ -21,6 +21,20 @@ public class JsonService {
     }
 
     /**
+     * Create path to json file.
+     * */
+    private static String getJsonpath() {
+        return ApplicationConfig.readApplicationConfig() + File.separator + "resumes";
+    }
+
+    /**
+     * Read json file and return list of entities if exists, otherwise empty array.
+     * */
+    public List<ResumeEntity> getJsonContent() {
+        return readJsonFile(getJsonpath());
+    }
+
+    /**
      * Write data to JSON file (path to saved PDF file and array of offers).
      */
     public void writeToJsonFile(String pdfPath, List<String> offers, boolean removeData, boolean removeEntity) {
@@ -110,9 +124,7 @@ public class JsonService {
      * if json already exists return path to file.
      */
     private Optional<String> createJsonFile() {
-        var mainDirectory = ApplicationConfig.readApplicationConfig();
-
-        File jsonFile = new File(mainDirectory + File.separator + "resumes");
+        File jsonFile = new File(getJsonpath());
 
         if (jsonFile.exists()) {
             return Optional.of(jsonFile.getAbsolutePath());

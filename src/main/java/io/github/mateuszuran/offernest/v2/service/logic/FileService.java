@@ -19,7 +19,7 @@ public class FileService {
      * Save resume pdf file when file extension is correct. Method returning given path when
      * note is empty otherwise newly created path to PDF file.
      * */
-    public Optional<Path> saveResume(String pdfPath, String resumeNote) {
+    public Optional<Path> createPdfPath(String pdfPath, String resumeNote) {
         File file = new File(pdfPath.replaceFirst("^/+", ""));
 
         if (!isPdfFile(file)) {

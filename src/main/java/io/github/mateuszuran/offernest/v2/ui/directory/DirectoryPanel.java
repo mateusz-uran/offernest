@@ -37,7 +37,6 @@ public class DirectoryPanel extends JPanel {
         searchButton.setEnabled(false);
 
         if (path != null && !path.isBlank()) {
-            System.out.println("Path found: " + path);
             directoryPath.setText(path);
             searchButton.setEnabled(true);
         }

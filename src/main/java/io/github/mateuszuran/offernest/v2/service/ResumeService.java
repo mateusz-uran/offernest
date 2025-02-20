@@ -5,6 +5,7 @@ import io.github.mateuszuran.offernest.v2.service.logic.FileService;
 import io.github.mateuszuran.offernest.v2.service.logic.JsonService;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
 public class ResumeService {
@@ -16,12 +17,16 @@ public class ResumeService {
         this.jsonService = jsonService;
     }
 
+    public List<ResumeEntity> getResumeEntities() {
+        return jsonService.getJsonContent();
+    }
+
     /**
      * Save resume PDF in created directory and write data to json file.
      * Update existing ResumeEntity object inside json file.
      */
-    public void saveResumeEntityDataToJson(ResumeEntity entity, boolean removeData, boolean removeEntity) {
-        saveResumePdf(entity.getPdfPath(), entity.getNote())
+    public void editJsonData(ResumeEntity entity, boolean removeData, boolean removeEntity) {
+        getPdfPath(entity.getPdfPath(), entity.getNote())
                 .ifPresent(path -> {
                             jsonService.writeToJsonFile(
                                     path.toUri().getPath(),
@@ -40,7 +45,7 @@ public class ResumeService {
     /**
      * Save resume PDF in created directory.
      */
-    private Optional<Path> saveResumePdf(String pdfPath, String resumeNote) {
-        return fileService.saveResume(pdfPath, resumeNote);
+    private Optional<Path> getPdfPath(String pdfPath, String resumeNote) {
+        return fileService.createPdfPath(pdfPath, resumeNote);
     }
 }
