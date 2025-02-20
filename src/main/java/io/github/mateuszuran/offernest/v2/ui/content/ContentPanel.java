@@ -5,6 +5,7 @@ import io.github.mateuszuran.offernest.v2.entity.ResumeEntity;
 import io.github.mateuszuran.offernest.v2.service.ResumeService;
 import io.github.mateuszuran.offernest.v2.service.logic.FileService;
 import io.github.mateuszuran.offernest.v2.service.logic.JsonService;
+import io.github.mateuszuran.offernest.v2.ui.form.ResumeDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +20,10 @@ public class ContentPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         JLabel label = new JLabel("Content");
+        JButton dialogButton = new JButton("Add resume");
+        dialogButton.addActionListener(e -> new ResumeDialog(this));
 
+        add(dialogButton);
         add(label);
         gatherContent();
     }
