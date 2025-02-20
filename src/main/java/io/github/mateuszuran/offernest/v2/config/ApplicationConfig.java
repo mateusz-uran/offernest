@@ -39,13 +39,15 @@ public class ApplicationConfig {
     /**
      * Create config.properties file and save path to main directory.
      * */
-    public static void saveApplicationConfig(String directory) {
+    public static String saveApplicationConfig(String directory) {
         props.setProperty(DIRECTORY_URL, directory);
 
         try (FileOutputStream output = new FileOutputStream(CONFIG_FILE)) {
             props.store(output, "Application config");
+            return directory;
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error while adding path to config: " + e.getMessage());
+            return null;
         }
 
     }

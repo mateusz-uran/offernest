@@ -1,7 +1,6 @@
 package io.github.mateuszuran.offernest.v2.service.logic;
 
 import io.github.mateuszuran.offernest.v2.config.ApplicationConfig;
-import io.github.mateuszuran.offernest.v2.entity.ResumeEntity;
 
 import java.io.File;
 import java.io.FileInputStream;
