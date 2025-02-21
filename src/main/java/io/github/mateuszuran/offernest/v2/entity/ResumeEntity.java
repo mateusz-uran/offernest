@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ResumeEntity {
     private String note;
-    private String pdfPath;
-    private List<String> offers;
-    private List<Observer> observers = new ArrayList<>();
+    private final String pdfPath;
+    private final List<String> offers;
+    private final List<Observer> observers = new ArrayList<>();
 
     @JsonCreator
     public ResumeEntity(@JsonProperty("pdfPath") String pdfPath,
@@ -34,7 +35,7 @@ public class ResumeEntity {
     }
 
     public List<String> getOffers() {
-        return offers;
+        return Collections.unmodifiableList(offers);
     }
 
     public void addOffer(String offer) {
