@@ -3,12 +3,14 @@ package io.github.mateuszuran.offernest.v2.entity;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ResumeEntity {
     private String note;
     private String pdfPath;
     private List<String> offers;
+    private List<Observer> observers = new ArrayList<>();
 
     @JsonCreator
     public ResumeEntity(@JsonProperty("pdfPath") String pdfPath,
@@ -27,24 +29,36 @@ public class ResumeEntity {
         return note;
     }
 
-    public void setNote(String note) {
-        this.note = note;
-    }
-
     public String getPdfPath() {
         return pdfPath;
-    }
-
-    public void setPdfPath(String pdfPath) {
-        this.pdfPath = pdfPath;
     }
 
     public List<String> getOffers() {
         return offers;
     }
 
-    public void setOffers(List<String> offers) {
-        this.offers = offers;
+    public void addOffer(String offer) {
+        offers.add(offer);
+        notifyObservers();
+    }
+
+    public void removeOffer(String offer) {
+        offers.remove(offer);
+        notifyObservers();
+    }
+
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    private void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update();
+        }
     }
 
     @Override
