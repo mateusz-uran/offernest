@@ -1,7 +1,7 @@
 package io.github.mateuszuran.offernest.v2.ui.form;
 
+import io.github.mateuszuran.offernest.v2.controller.ResumeController;
 import io.github.mateuszuran.offernest.v2.entity.ResumeEntity;
-import io.github.mateuszuran.offernest.v2.service.ResumeService;
 import io.github.mateuszuran.offernest.v2.service.logic.GlobalFileChooser;
 
 import javax.swing.*;
@@ -10,14 +10,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ResumeDialog extends JDialog {
-
+    private final ResumeController resumeController;
+    private final Runnable refreshCallback;
     private JTextField noteText;
     private JLabel fileLabel;
     private DefaultListModel<String> listModel;
     private JList<String> stringList;
 
-    public ResumeDialog(Component parent) {
+    public ResumeDialog(Component parent, ResumeController resumeController, Runnable refreshCallback) {
         super(SwingUtilities.getWindowAncestor(parent), "Resume Dialog", ModalityType.APPLICATION_MODAL);
+        this.resumeController = resumeController;
+        this.refreshCallback = refreshCallback;
         setLayout(new BorderLayout());
 
         add(createNotePanel(), BorderLayout.NORTH);
@@ -117,21 +120,32 @@ public class ResumeDialog extends JDialog {
         JButton saveButton = new JButton("Save");
 
         saveButton.addActionListener(e -> {
-            List<String> offers = new ArrayList<>();
-            for (int i = 0; i < listModel.size(); i++) {
-                offers.add(listModel.get(i));
+            if (validateInput()) {
+                List<String> offers = new ArrayList<>();
+                for (int i=0; i<listModel.size(); i++) {
+                    offers.add(listModel.get(i));
+                }
+
+                resumeController.addResume(new ResumeEntity(noteText.getText(), fileLabel.getText(), offers));
+
+                refreshCallback.run();
+                dispose();
             }
-
-            JOptionPane.showMessageDialog(this,
-                    "Note: " + noteText.getText().trim() + "\n" +
-                            "File: " + fileLabel.getText() + "\n" +
-                            "Offers: " + String.join(", ", offers),
-                    "Collected Data", JOptionPane.INFORMATION_MESSAGE);
-
-            ResumeService.getInstance().editJsonData(new ResumeEntity(noteText.getText(), fileLabel.getText(), offers), false, false);
         });
 
         panel.add(saveButton);
         return panel;
+    }
+
+    private boolean validateInput() {
+        if (noteText.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Note cannot be empty!", "Validation Error", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        if (fileLabel.getText().equals("No file selected")) {
+            JOptionPane.showMessageDialog(this, "You must select a file!", "Validation Error", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        return true;
     }
 }

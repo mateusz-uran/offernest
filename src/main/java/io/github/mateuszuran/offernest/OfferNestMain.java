@@ -21,6 +21,6 @@ public class OfferNestMain {
         ResumeService resumeService = new ResumeService(fileService, jsonService);
 
         // call when updating entity
-        resumeService.editJsonData(new ResumeEntity( "third", "D:/temp_folder/temp3.pdf", List.of("link1", "link2")), false, false);
+        resumeService.editJsonData(new ResumeEntity("qqqq","/D:/Dokumenty/aplikowanko/qqqq/temp.pdf", List.of("asdasd")), true, false);
     }*/
 }
