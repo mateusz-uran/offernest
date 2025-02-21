@@ -9,10 +9,14 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 public class ResumePanel extends JPanel {
+    private static final int PANEL_HEIGHT = 220;
 
     public ResumePanel(ResumeEntity entity, Consumer<ResumeEntity> deleteCallback) {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        setMaximumSize(new Dimension(Integer.MAX_VALUE, PANEL_HEIGHT));
+        setPreferredSize(new Dimension(getPreferredSize().width, PANEL_HEIGHT));
 
         OffersPanel offersPanel = new OffersPanel(entity);
 

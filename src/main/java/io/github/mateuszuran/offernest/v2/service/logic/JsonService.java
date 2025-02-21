@@ -38,7 +38,6 @@ public class JsonService {
      * Write data to JSON file (path to saved PDF file and array of offers).
      */
     public void writeToJsonFile(String pdfPath, List<String> offers, boolean removeData, boolean removeEntity) {
-
         createJsonFile().ifPresent(path -> {
             var jsonContent = readJsonFile(path);
 
@@ -60,12 +59,20 @@ public class JsonService {
 
         for (ResumeEntity entity : entities) {
             if (entity.getPdfPath().equals(data.getPdfPath())) {
-                entity.getOffers().removeAll(data.getOffers());
+
+                List<String> updatedOffers = new ArrayList<>(entity.getOffers());
+
+                boolean changed = updatedOffers.removeAll(new ArrayList<>(data.getOffers()));
+
+                if (changed) {
+                    entity.setOffers(updatedOffers);
+                }
             }
         }
 
         writeToFile(jsonPath, entities);
     }
+
 
     /**
      * Loop existing entities:
@@ -73,6 +80,7 @@ public class JsonService {
      * - when entity not exists add to new ResumeEntity to list
      */
     private void addResumesOrOffers(List<ResumeEntity> entities, ResumeEntity data, String jsonPath) {
+
         if (entities.isEmpty()) {
             entities.add(data);
             writeToFile(jsonPath, entities);

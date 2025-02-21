@@ -10,7 +10,7 @@ import java.util.List;
 public class ResumeEntity {
     private String note;
     private final String pdfPath;
-    private final List<String> offers;
+    private List<String> offers;
     private final List<Observer> observers = new ArrayList<>();
 
     @JsonCreator
@@ -34,8 +34,14 @@ public class ResumeEntity {
         return pdfPath;
     }
 
+    public void setOffers(List<String> offers) {
+        this.offers = offers;
+        notifyObservers();
+    }
+
+
     public List<String> getOffers() {
-        return Collections.unmodifiableList(offers);
+        return offers;
     }
 
     public void addOffer(String offer) {
