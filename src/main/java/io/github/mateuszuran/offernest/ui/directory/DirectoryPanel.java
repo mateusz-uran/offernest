@@ -61,7 +61,7 @@ public class DirectoryPanel extends JPanel {
             if (!path.isBlank()) {
                 ApplicationConfig.saveApplicationConfig(path);
                 directoryPath.setText(path);
-                searchButton.setEnabled(true);
+                openButton.setEnabled(true);
             }
 
 

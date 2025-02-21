@@ -29,7 +29,14 @@ public class ContentPanel extends JPanel {
     private JPanel createAddResumePanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton dialogButton = new JButton("Add resume");
-        dialogButton.addActionListener(e -> new ResumeDialog(this, resumeController, this::gatherContent));
+        dialogButton.addActionListener(e -> {
+            if (!ApplicationConfig.configFileExists()) {
+                JOptionPane.showMessageDialog(this, "Main directory not found, choose first!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            new ResumeDialog(this, resumeController, this::gatherContent);
+        });
         panel.add(dialogButton);
         return panel;
     }

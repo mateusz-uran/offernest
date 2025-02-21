@@ -15,7 +15,8 @@ public class ApplicationConfig {
      * Check if config,properties file exists.
      * */
     public static boolean configFileExists() {
-        return new File(CONFIG_FILE).exists();
+        File configFile = new File(CONFIG_FILE);
+        return configFile.exists() && configFile.length() > 0;
     }
 
     /**
