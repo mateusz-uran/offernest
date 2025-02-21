@@ -11,7 +11,8 @@ public class NestFrame extends JFrame {
     public NestFrame() {
         setTitle("Offer nest");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(1280, 960);
+        setSize(800, 600);
+        setMinimumSize(new Dimension(800, 700));
         setLayout(new BorderLayout());
 
         setLocationRelativeTo(null);

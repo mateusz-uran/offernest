@@ -37,14 +37,14 @@ public class JsonService {
     /**
      * Write data to JSON file (path to saved PDF file and array of offers).
      */
-    public void writeToJsonFile(String pdfPath, List<String> offers, boolean removeData, boolean removeEntity) {
+    public void writeToJsonFile(String pdfPath, String note, List<String> offers, boolean removeData, boolean removeEntity) {
         createJsonFile().ifPresent(path -> {
             var jsonContent = readJsonFile(path);
 
             if (removeData) {
                 removeResumesOrOffers(jsonContent, new ResumeEntity(pdfPath, offers), path, removeEntity);
             } else {
-                addResumesOrOffers(jsonContent, new ResumeEntity(pdfPath, offers), path);
+                addResumesOrOffers(jsonContent, new ResumeEntity(note, pdfPath, offers), path);
             }
         });
     }

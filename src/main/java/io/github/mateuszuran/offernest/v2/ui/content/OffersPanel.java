@@ -23,6 +23,7 @@ public class OffersPanel extends JPanel implements Observer {
         this.controller = new ResumeController();
         this.entity.addObserver(this);
         setLayout(new BorderLayout());
+        setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.BLACK));
         checkBoxMap = new HashMap<>();
 
         offersListPanel = new JPanel();
@@ -41,8 +42,8 @@ public class OffersPanel extends JPanel implements Observer {
         inputPanel.add(addOfferButton);
         inputPanel.add(deleteSelectedButton);
 
+        add(inputPanel, BorderLayout.NORTH);
         add(offersListPanel, BorderLayout.CENTER);
-        add(inputPanel, BorderLayout.SOUTH);
     }
 
     @Override
@@ -53,9 +54,15 @@ public class OffersPanel extends JPanel implements Observer {
         for (String offer : entity.getOffers()) {
             JPanel offerRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-            JCheckBox checkBox = new JCheckBox(offer);
+            JCheckBox checkBox = new JCheckBox();
             checkBoxMap.put(offer, checkBox);
             offerRow.add(checkBox);
+
+            JTextField offerText = new JTextField(offer);
+            offerText.setEditable(false);
+            offerText.setPreferredSize(new Dimension(520, offerText.getPreferredSize().height));
+
+            offerRow.add(offerText);
 
             offersListPanel.add(offerRow);
         }

@@ -14,14 +14,15 @@ public class ResumeEntity {
     private final List<Observer> observers = new ArrayList<>();
 
     @JsonCreator
-    public ResumeEntity(@JsonProperty("pdfPath") String pdfPath,
+    public ResumeEntity(@JsonProperty("note") String note,
+                        @JsonProperty("pdfPath") String pdfPath,
                         @JsonProperty("offers") List<String> offers) {
+        this.note = note;
         this.pdfPath = pdfPath;
         this.offers = offers;
     }
 
-    public ResumeEntity(String note, String pdfPath, List<String> offers) {
-        this.note = note;
+    public ResumeEntity(String pdfPath, List<String> offers) {
         this.pdfPath = pdfPath;
         this.offers = offers;
     }

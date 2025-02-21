@@ -43,6 +43,7 @@ public class ResumeService {
                 .ifPresent(path -> {
                             jsonService.writeToJsonFile(
                                     path.toUri().getPath(),
+                                    entity.getNote(),
                                     entity.getOffers(),
                                     removeData,
                                     removeEntity);
