@@ -1,54 +1,65 @@
 package io.github.mateuszuran.offernest.service;
 
-import io.github.mateuszuran.offernest.config.ConfigManager;
-import io.github.mateuszuran.offernest.service.logic.PersistData;
-import io.github.mateuszuran.offernest.model.ResumeEntity;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.mateuszuran.offernest.service.logic.FileService;
+import io.github.mateuszuran.offernest.entity.ResumeEntity;
+import io.github.mateuszuran.offernest.service.logic.JsonService;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 
 public class ResumeService {
+    private static volatile ResumeService instance;
+    private final FileService fileService;
+    private final JsonService jsonService;
 
-    public static void addResume(String note, String filePath, List<String> links) {
-        File subdirectory = createOrGetSubdirectory(note);
-
-        if (subdirectory == null || !validateSourceFile(filePath)) {
-            return;
-        }
-
-        copyFileToDirectory(new File(filePath), subdirectory, links);
+    public ResumeService(FileService fileService, JsonService jsonService) {
+        this.fileService = fileService;
+        this.jsonService = jsonService;
     }
 
-    private static File createOrGetSubdirectory(String note) {
-        String directoryName = note.isEmpty() ? "default_resume" : note.replaceAll(" ", "_");
-        String targetDirectoryPath = ConfigManager.readDirectory() + File.separator + directoryName;
-
-        File subdirectory = new File(targetDirectoryPath);
-        if (!subdirectory.exists() && !subdirectory.mkdir()) {
-            return null;
+    public static ResumeService getInstance() {
+        if (instance == null) {
+            synchronized (ResumeService.class) {
+                if (instance == null) {
+                    instance = new ResumeService(new FileService(), new JsonService(new ObjectMapper()));
+                }
+            }
         }
-        return subdirectory;
+        return instance;
     }
 
-    private static boolean validateSourceFile(String filePath) {
-        File file = new File(filePath);
-        return file.exists() && file.isFile();
+    public List<ResumeEntity> getResumeEntities() {
+        return jsonService.getJsonContent();
     }
 
-    private static void copyFileToDirectory(File sourceFile, File targetDirectory, List<String> links) {
-        Path destinationPath = Paths.get(targetDirectory.getAbsolutePath(), sourceFile.getName());
+    /**
+     * Save resume PDF in created directory and write data to json file.
+     * Update existing ResumeEntity object inside json file.
+     */
+    public void editJsonData(ResumeEntity entity, boolean removeData, boolean removeEntity) {
+        getPdfPath(entity.getPdfPath(), entity.getNote())
+                .ifPresent(path -> {
+                            jsonService.writeToJsonFile(
+                                    path.toUri().getPath(),
+                                    entity.getNote(),
+                                    entity.getOffers(),
+                                    removeData,
+                                    removeEntity);
 
-        try {
-            Files.copy(sourceFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
-            PersistData.saveResume(new ResumeEntity(destinationPath.toString(), links));
-            System.out.println("File copied to: " + destinationPath);
-        } catch (IOException e) {
-            System.err.println("Error copying file: " + e.getMessage());
-        }
+                            if (removeData && removeEntity) {
+                                fileService.deleteDirectory(path.getParent());
+                            }
+                        }
+                );
+    }
+
+
+    /**
+     * Save resume PDF in created directory.
+     */
+    private Optional<Path> getPdfPath(String pdfPath, String resumeNote) {
+        return fileService.createPdfPath(pdfPath, resumeNote);
     }
 }
