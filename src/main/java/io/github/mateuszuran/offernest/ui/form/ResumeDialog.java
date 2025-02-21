@@ -1,8 +1,8 @@
-package io.github.mateuszuran.offernest.v2.ui.form;
+package io.github.mateuszuran.offernest.ui.form;
 
-import io.github.mateuszuran.offernest.v2.controller.ResumeController;
-import io.github.mateuszuran.offernest.v2.entity.ResumeEntity;
-import io.github.mateuszuran.offernest.v2.service.logic.GlobalFileChooser;
+import io.github.mateuszuran.offernest.controller.ResumeController;
+import io.github.mateuszuran.offernest.entity.ResumeEntity;
+import io.github.mateuszuran.offernest.service.logic.GlobalFileChooser;
 
 import javax.swing.*;
 import java.awt.*;

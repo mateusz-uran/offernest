@@ -1,8 +1,7 @@
 package io.github.mateuszuran.offernest.ui.directory;
 
-
-import io.github.mateuszuran.offernest.config.ConfigManager;
-import io.github.mateuszuran.offernest.ui.GlobalFileChooser;
+import io.github.mateuszuran.offernest.config.ApplicationConfig;
+import io.github.mateuszuran.offernest.service.logic.GlobalFileChooser;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,61 +9,62 @@ import java.io.File;
 import java.io.IOException;
 
 public class DirectoryPanel extends JPanel {
-    private final JButton searchButton = new JButton("Search");
-    private final JTextField directory = new JTextField();
-    private final JButton dirButton = new JButton("Open");
+    private final JTextField directoryPath;
+    private final JButton openButton;
+    private final JButton searchButton;
 
     public DirectoryPanel() {
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        setOpaque(false);
+        setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        JPanel textPanel = new JPanel();
-        Dimension size = new Dimension(200, 25);
-        directory.setPreferredSize(size);
-        directory.setMaximumSize(size);
-        directory.setEditable(false);
-        directory.setMargin(new Insets(1, 5, 1, 5));
+        JLabel label = new JLabel("Directory");
+        directoryPath = new JTextField(20);
+        directoryPath.setEditable(false);
 
-        textPanel.add(directory);
-        textPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+        openButton = new JButton("Open");
+        searchButton = new JButton("Search");
 
+        checkIfDirectoryExists();
+        initializeAction();
+
+        add(label);
+        add(directoryPath);
         add(searchButton);
-        add(textPanel);
-        add(dirButton);
-
-        initializeActions();
-        loadInitialDirectory();
+        add(openButton);
     }
 
+    private void checkIfDirectoryExists() {
+        String path = ApplicationConfig.readApplicationConfig();
+        searchButton.setEnabled(false);
 
-    private void initializeActions() {
-        searchButton.addActionListener(e -> openDirectoryChooser());
-        dirButton.addActionListener(e -> openDirectory());
-    }
-
-    private void loadInitialDirectory() {
-        String dir = ConfigManager.readDirectory();
-        if (dir != null && !dir.isEmpty()) {
-            directory.setText(dir);
-            dirButton.setEnabled(true);
-        } else dirButton.setEnabled(false);
-    }
-
-    private void openDirectoryChooser() {
-        String path = GlobalFileChooser.chooseFile(1);
-        ConfigManager.saveDirectory(path);
-        directory.setText(path);
-        dirButton.setEnabled(true);
-    }
-
-    private void openDirectory() {
-        File dir = new File(directory.getText());
-        try {
-            Desktop desktop = Desktop.getDesktop();
-            desktop.open(dir);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (path != null && !path.isBlank()) {
+            directoryPath.setText(path);
+            searchButton.setEnabled(true);
         }
+    }
+
+    private void initializeAction() {
+        openButton.addActionListener(e -> {
+            File dir = new File(directoryPath.getText());
+            if (dir.exists() && dir.isDirectory()) {
+                try {
+                    Desktop.getDesktop().open(dir);
+                } catch (IOException m) {
+                    System.err.println("Error while opening directory: " + m.getMessage());
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Directory does not exist!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        searchButton.addActionListener(e -> {
+            String path = GlobalFileChooser.chooseFile(JFileChooser.DIRECTORIES_ONLY);
+            if (!path.isBlank()) {
+                ApplicationConfig.saveApplicationConfig(path);
+                directoryPath.setText(path);
+                searchButton.setEnabled(true);
+            }
+
+
+        });
     }
 }

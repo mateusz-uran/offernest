@@ -1,6 +1,6 @@
-package io.github.mateuszuran.offernest.v2.service.logic;
+package io.github.mateuszuran.offernest.service.logic;
 
-import io.github.mateuszuran.offernest.v2.config.ApplicationConfig;
+import io.github.mateuszuran.offernest.config.ApplicationConfig;
 
 import java.io.File;
 import java.io.FileInputStream;

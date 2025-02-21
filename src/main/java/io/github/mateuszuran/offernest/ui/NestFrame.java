@@ -1,7 +1,7 @@
-package io.github.mateuszuran.offernest.v2.ui;
+package io.github.mateuszuran.offernest.ui;
 
-import io.github.mateuszuran.offernest.v2.ui.content.ContentPanel;
-import io.github.mateuszuran.offernest.v2.ui.directory.DirectoryPanel;
+import io.github.mateuszuran.offernest.ui.content.ContentPanel;
+import io.github.mateuszuran.offernest.ui.directory.DirectoryPanel;
 
 import javax.swing.*;
 import java.awt.*;

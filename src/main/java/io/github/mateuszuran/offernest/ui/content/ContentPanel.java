@@ -1,8 +1,8 @@
-package io.github.mateuszuran.offernest.v2.ui.content;
+package io.github.mateuszuran.offernest.ui.content;
 
-import io.github.mateuszuran.offernest.v2.controller.ResumeController;
-import io.github.mateuszuran.offernest.v2.entity.ResumeEntity;
-import io.github.mateuszuran.offernest.v2.ui.form.ResumeDialog;
+import io.github.mateuszuran.offernest.controller.ResumeController;
+import io.github.mateuszuran.offernest.ui.form.ResumeDialog;
+import io.github.mateuszuran.offernest.entity.ResumeEntity;
 
 import javax.swing.*;
 import java.awt.*;

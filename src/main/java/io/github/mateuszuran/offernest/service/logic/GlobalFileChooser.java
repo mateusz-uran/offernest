@@ -1,4 +1,4 @@
-package io.github.mateuszuran.offernest.v2.service.logic;
+package io.github.mateuszuran.offernest.service.logic;
 
 import javax.swing.*;
 import java.io.File;

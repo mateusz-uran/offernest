@@ -1,7 +1,7 @@
-package io.github.mateuszuran.offernest.v2.controller;
+package io.github.mateuszuran.offernest.controller;
 
-import io.github.mateuszuran.offernest.v2.entity.ResumeEntity;
-import io.github.mateuszuran.offernest.v2.service.ResumeService;
+import io.github.mateuszuran.offernest.entity.ResumeEntity;
+import io.github.mateuszuran.offernest.service.ResumeService;
 
 import java.util.List;
 

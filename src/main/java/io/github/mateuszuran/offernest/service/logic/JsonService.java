@@ -1,9 +1,9 @@
-package io.github.mateuszuran.offernest.v2.service.logic;
+package io.github.mateuszuran.offernest.service.logic;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.mateuszuran.offernest.v2.config.ApplicationConfig;
-import io.github.mateuszuran.offernest.v2.entity.ResumeEntity;
+import io.github.mateuszuran.offernest.config.ApplicationConfig;
+import io.github.mateuszuran.offernest.entity.ResumeEntity;
 
 import java.io.File;
 import java.io.FileReader;
