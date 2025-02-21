@@ -1,5 +1,6 @@
 package io.github.mateuszuran.offernest.ui.content;
 
+import io.github.mateuszuran.offernest.config.ApplicationConfig;
 import io.github.mateuszuran.offernest.controller.ResumeController;
 import io.github.mateuszuran.offernest.ui.form.ResumeDialog;
 import io.github.mateuszuran.offernest.entity.ResumeEntity;

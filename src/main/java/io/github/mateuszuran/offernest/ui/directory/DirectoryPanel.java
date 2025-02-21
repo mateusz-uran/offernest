@@ -34,11 +34,11 @@ public class DirectoryPanel extends JPanel {
 
     private void checkIfDirectoryExists() {
         String path = ApplicationConfig.readApplicationConfig();
-        searchButton.setEnabled(false);
+        openButton.setEnabled(false);
 
         if (path != null && !path.isBlank()) {
             directoryPath.setText(path);
-            searchButton.setEnabled(true);
+            openButton.setEnabled(true);
         }
     }
 
